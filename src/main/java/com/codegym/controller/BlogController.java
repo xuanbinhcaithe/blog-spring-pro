@@ -5,15 +5,15 @@ import com.codegym.model.Blog;
 import com.codegym.service.AuthorService;
 import com.codegym.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class BlogController {
@@ -44,13 +44,23 @@ public class BlogController {
         modelAndView.addObject("message","SUCCESSFULLY!");
         return modelAndView;
     }
+
+
     @GetMapping("/blog")
-    public ModelAndView listBlog() {
-        Iterable<Blog> blogs = blogService.findAll();
-        ModelAndView modelAndView = new ModelAndView("/blog/list");
-        modelAndView.addObject("blog",blogs);
-        return modelAndView;
+    public ModelAndView listBlog(@RequestParam("s") Optional<String> s, Pageable pageable) {
+        Page<Blog> blogs;
+      if (s.isPresent()) {
+          blogs = blogService.findAllByNameContaining(s.get(),pageable);
+
+      }else {
+          blogs = blogService.findAll(pageable);
+      }
+      ModelAndView modelAndView = new ModelAndView("/blog/list");
+      modelAndView.addObject("blog",blogs);
+      return modelAndView;
     }
+
+
     @GetMapping("/edit-blog/{id}")
     public ModelAndView showEditForm(@PathVariable Long id) {
         Blog blog = blogService.findById(id);
