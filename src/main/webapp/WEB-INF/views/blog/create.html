@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Blog</title>
+</head>
+<body>
+    <h1>Create Bog</h1>
+    <p>
+        <a href="/blog">
+            List Blog
+        </a>
+    </p>
+    <th:block th:if="${message}">
+        <p th:text="${message}"></p>
+    </th:block>
+    <form th:action="@{/create-blog}" th:object="${blog}" method="post">
+        <table>
+            <tr>
+                <td>Name's blog</td>
+                <td><input type="text" th:field="*{name}"></td>
+            </tr>
+            <tr>
+                <td>Content of blog</td>
+                <td><textarea th:field="*{content}" th:rows="12" cols="60"></textarea></td>
+            </tr>
+            <tr>
+                <td>Author:</td>
+                <td><select th:field="*{author}">
+                    <option th:each="au : ${author}" th:value="${au.id}" th:text="${au.name}"></option>
+                </select></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Create"></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
